@@ -1,3 +1,3 @@
 # MSSort-DIA-XMBD
 
-The training, validation and testing datasets are uploaded to 
+The training, validation and test datasets have been uploaded to https://github.com/jianweishuai/MSSort-DIA-XMBD/releases
