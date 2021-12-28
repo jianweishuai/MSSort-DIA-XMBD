@@ -51,8 +51,6 @@ def testing_auc(net, test_iter, loss, ctx):
     np.savetxt(os.getcwd() + '/20211201/result_combined/3/roc_dnn_test_fpr', fpr, fmt='%f', delimiter=',')
     np.savetxt(os.getcwd() + '/20211201/result_combined/3/roc_dnn_test_tpr', tpr, fmt='%f', delimiter=',')
     
-    
-    
     testing_loss = test_l_sum / n
     
     return testing_loss, test_auc
@@ -164,10 +162,7 @@ def train_ch5(net, train_iter, valid_iter, test_iter, batch_size, trainer, ctx, 
     
     return train_loss, valid_loss, testing_loss
 
-
 batch_size = 256
-
-
 
 train_data = np.load(os.getcwd()+'/data/train_data_gh.npy')
 train_label = np.load(os.getcwd()+'/data/train_label_gh.npy')
@@ -178,43 +173,13 @@ valid_label = np.load(os.getcwd()+'/data/valid_label_gh.npy')
 test_data = np.load(os.getcwd()+'/data/test_data_gh.npy')
 test_label = np.load(os.getcwd()+'/data/test_label_gh.npy')
 
-
 train_data, train_label = nd.array(train_data).reshape(len(train_data),1, 6, 85), nd.array(train_label)   
 valid_data, valid_label = nd.array(valid_data).reshape(len(valid_data),1, 6, 85), nd.array(valid_label)   
 test_data, test_label = nd.array(test_data).reshape(len(test_data),1, 6, 85), nd.array(test_label)   
 
-
 data_iter_train = mx.io.NDArrayIter(train_data, label=train_label, batch_size=batch_size, shuffle=True, last_batch_handle='discard')
 data_iter_test  = mx.io.NDArrayIter(test_data, label=test_label, batch_size=batch_size, shuffle=True, last_batch_handle='discard')
 data_iter_valid  = mx.io.NDArrayIter(valid_data, label=valid_label, batch_size=batch_size, shuffle=True, last_batch_handle='discard')
-
-
-
-"""
-
-train_data = np.load(os.getcwd() + '/data/nonshuflle_x.npy')
-train_label = np.load(os.getcwd() + '/data/nonshuffle_label.npy')
-
-data1_ = []
-for i in range(len(train_data)):
-    data1_.append(preprocessing.minmax_scale(np.array(train_data[i]).reshape(6,85),axis=1))
-data1_scaled = np.array(data1_).reshape(len(data1_), 6*85)
-
-train_data = nd.array(data1_scaled)
-
-test_data = np.load(os.getcwd() + '/data/Test_XICs.npy')
-test_label = np.load(os.getcwd() + '/data/Test_labels.npy')
-
-data2_ = []
-for i in range(len(test_data)):
-    data2_.append(preprocessing.minmax_scale(np.array(test_data[i][1:]).reshape(6,85),axis=1))
-data2_scaled = np.array(data2_).reshape(len(data2_), 6*85)
-
-test_data = nd.array(data2_scaled)
-
-data_iter_train = mx.io.NDArrayIter(train_data, label=train_label, batch_size=batch_size, shuffle=True)
-data_iter_test  = mx.io.NDArrayIter(test_data, label=test_label, batch_size=batch_size, shuffle=True)
-"""
 
 ctx = mx.gpu()
 lr, num_epochs = 0.001, 101
@@ -232,7 +197,6 @@ net.hybridize()
 
 
 time_start = time.time()
-#optim = optimizer.Adam(learning_rate=lr, beta1=0.9, beta2=0.999, epsilon=1e-08,wd=1e-5)
 trainer = gluon.Trainer(net.collect_params(), 'adam',optimizer_params={'learning_rate':lr,'wd':5e-4}) #{'wd':5e-4}
 train_loss, valid_loss, testing_loss = train_ch5(net, data_iter_train, data_iter_valid, data_iter_test, batch_size, trainer, ctx, num_epochs)
 
